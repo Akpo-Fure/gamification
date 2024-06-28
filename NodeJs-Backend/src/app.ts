@@ -4,6 +4,7 @@ import logger from "morgan";
 import cors from "cors";
 import socketServer from "./socket/socket";
 import { connectDB } from "./config";
+import { authRoute } from "./routes";
 
 const app: Application = express();
 const server = socketServer(app);
@@ -18,8 +19,10 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
 });
 
-server.listen(process.env.PORT, async () => {
-  await connectDB();
+app.use("/api/auth", authRoute);
+
+server.listen(process.env.PORT, () => {
+  connectDB();
   console.clear();
   console.log(`Server is running on port: ${process.env.PORT}`);
 });

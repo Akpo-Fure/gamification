@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { CreateUserDto } from "../dto";
 
-const userSchema: Schema = new Schema(
+const userSchema: Schema = new Schema<CreateUserDto>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -11,6 +12,7 @@ const userSchema: Schema = new Schema(
     referralCode: { type: String, required: true },
     lastLogin: { type: Date, required: false },
     loginStreak: { type: Number, required: true, default: 0 },
+    isDisabled: { type: Boolean, required: true, default: false },
     verificationToken: { type: String, required: false },
     verificationTokenExpire: { type: Date, required: false },
     resetPasswordToken: { type: String, required: false },
