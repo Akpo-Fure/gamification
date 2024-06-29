@@ -2,16 +2,17 @@ import { Response } from "express";
 import * as argon from "argon2";
 import { UserService, JWTService } from "../services";
 import {
-  CreateUserDto,
-  ForgotPasswordDto,
+  SignupUserDto,
   LoginUserDto,
+  ForgotPasswordDto,
   ResetPasswordDto,
 } from "../dto";
+
 import { getUser } from "../constants";
 import { areConsecutiveDays } from "../utils";
 
 const AuthService = {
-  signup: async (res: Response, dto: CreateUserDto) => {
+  signup: async (res: Response, dto: SignupUserDto) => {
     let user = await UserService.getUser(getUser.EMAIL, dto.email);
 
     if (user) {
@@ -20,10 +21,11 @@ const AuthService = {
     const referralCode = await UserService.generateUniqueReference();
 
     dto.password = await argon.hash(dto.password);
-    dto.referralCode = referralCode!;
-    dto.email = dto.email.toLowerCase();
 
-    await UserService.create(dto);
+    await UserService.create({
+      ...dto,
+      referralCode,
+    });
 
     return res
       .status(201)
@@ -91,10 +93,6 @@ const AuthService = {
     token: string,
     dto: ResetPasswordDto
   ) => {
-    if (dto.password !== dto.confirmPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
     let user = await UserService.getUser(getUser.OPTIONS, undefined, {
       _id: userId,
       resetPasswordToken: token,

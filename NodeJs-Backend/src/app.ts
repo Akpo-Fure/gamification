@@ -1,11 +1,11 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
+import apiRoutes from "./routes";
 import { config } from "dotenv";
 import { errorHandler } from "./middlewares";
 import { socketServer } from "./socket";
 import { connectDB } from "./config";
-import { authRoute } from "./routes";
 import { IError } from "./interfaces";
 
 const app: Application = express();
@@ -23,7 +23,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-app.use("/api/auth", authRoute);
+app.use("/api", apiRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const error: IError = new Error("API Endpoint Not found");

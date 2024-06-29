@@ -1,31 +1,14 @@
-import { IsEmail, IsString, IsNotEmpty, MinLength } from "class-validator";
+import { z } from "zod";
+import {
+  LoginUserSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+  SignupUserSchema,
+} from "../validation/auth.validator";
 
-class LoginUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+type LoginUserDto = z.infer<typeof LoginUserSchema>;
+type ForgotPasswordDto = z.infer<typeof ForgotPasswordSchema>;
+type ResetPasswordDto = z.infer<typeof ResetPasswordSchema>;
+type SignupUserDto = z.infer<typeof SignupUserSchema>;
 
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-}
-
-class ForgotPasswordDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-}
-
-class ResetPasswordDto {
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
-  confirmPassword: string;
-}
-
-export { LoginUserDto, ForgotPasswordDto, ResetPasswordDto };
+export { LoginUserDto, ForgotPasswordDto, ResetPasswordDto, SignupUserDto };

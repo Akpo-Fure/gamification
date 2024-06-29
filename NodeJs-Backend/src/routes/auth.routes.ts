@@ -2,31 +2,35 @@ import express from "express";
 import { AuthController } from "../controllers";
 import { validationMiddleware } from "../middlewares";
 import {
-  CreateUserDto,
-  LoginUserDto,
-  ForgotPasswordDto,
-  ResetPasswordDto,
-} from "../dto";
+  SignupUserSchema,
+  LoginUserSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+} from "../validation";
 
 const router = express.Router();
 
 router.post(
   "/signup",
-  validationMiddleware(CreateUserDto),
+  validationMiddleware(SignupUserSchema),
   AuthController.signup
 );
 
-router.post("/login", validationMiddleware(LoginUserDto), AuthController.login);
+router.post(
+  "/login",
+  validationMiddleware(LoginUserSchema),
+  AuthController.login
+);
 
 router.patch(
   "/forgotpassword",
-  validationMiddleware(ForgotPasswordDto),
+  validationMiddleware(ForgotPasswordSchema),
   AuthController.forgotpassword
 );
 
 router.patch(
   "/resetpassword/:userId/:token",
-  validationMiddleware(ResetPasswordDto),
+  validationMiddleware(ResetPasswordSchema),
   AuthController.resetpassword
 );
 

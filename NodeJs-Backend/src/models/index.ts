@@ -1,3 +1,4 @@
 import User from "./user.model";
+import Survey from "./survey.model";
 
-export { User };
+export { User, Survey };

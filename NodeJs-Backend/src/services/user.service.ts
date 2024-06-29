@@ -1,6 +1,6 @@
 import { User } from "../models";
 import { IUser } from "../interfaces";
-import { CreateUserDto } from "../dto";
+import { SignupUserDto } from "../dto";
 import { getUser } from "../constants";
 
 const UserService = {
@@ -23,11 +23,11 @@ const UserService = {
     }
   },
 
-  create: async (data: CreateUserDto) => {
+  create: async (data: SignupUserDto) => {
     return await User.create(data);
   },
 
-  generateUniqueReference: async (): Promise<string | null> => {
+  generateUniqueReference: async (): Promise<string | undefined> => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let referralCode = "";
 

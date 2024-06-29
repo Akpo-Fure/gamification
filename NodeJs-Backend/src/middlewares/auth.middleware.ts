@@ -1,14 +1,15 @@
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
 import { UserService, JWTService } from "../services";
 import { getUser } from "../constants";
 import { IUser, IRequest } from "../interfaces";
 
 const AuthMiddleware = async (
-  req: IRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const token = req.headers.authorization?.split(" ")[1];
+
   if (!token) {
     return res.status(401).json({ message: "Unauthorized! Please log in" });
   }
@@ -20,7 +21,7 @@ const AuthMiddleware = async (
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = await UserService.getUser(getUser.ID, decoded.id);
+    const user = await UserService.getUser(getUser.ID, decoded._id as string);
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -32,7 +33,7 @@ const AuthMiddleware = async (
         .json({ message: "Your account is disabled, please contact support" });
     }
 
-    req.user = user;
+    (req as IRequest).user = user;
 
     next();
   } catch (error) {
