@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { UserService, JWTService } from "../services";
 import { getUser } from "../constants";
-import { IUserResponse, IRequest } from "../interfaces";
+import { IUser, IRequest } from "../interfaces";
 
 const AuthMiddleware = async (
   req: IRequest,
@@ -14,13 +14,13 @@ const AuthMiddleware = async (
   }
 
   try {
-    const decoded = JWTService.verify(token) as IUserResponse;
+    const decoded = JWTService.verify(token) as IUser;
 
     if (!decoded) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const user = await UserService.getUser(decoded.id, getUser.ID);
+    const user = await UserService.getUser(getUser.ID, decoded.id);
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -32,8 +32,12 @@ const AuthMiddleware = async (
         .json({ message: "Your account is disabled, please contact support" });
     }
 
+    req.user = user;
+
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized " });
   }
 };
+
+export default AuthMiddleware;

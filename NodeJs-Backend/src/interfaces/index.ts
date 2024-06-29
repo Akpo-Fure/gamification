@@ -1,4 +1,5 @@
-import { IUserResponse } from "./user.interface";
+import { IUser } from "./user.interface";
 import { IRequest } from "./auth.interface";
+import { IError } from "./error.interface";
 
-export { IUserResponse, IRequest };
+export { IUser, IRequest, IError };

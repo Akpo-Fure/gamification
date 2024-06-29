@@ -1,38 +1,38 @@
 import { Response } from "express";
 import * as argon from "argon2";
 import { UserService, JWTService } from "../services";
-import { CreateUserDto, LoginUserDto } from "../dto";
+import {
+  CreateUserDto,
+  ForgotPasswordDto,
+  LoginUserDto,
+  ResetPasswordDto,
+} from "../dto";
 import { getUser } from "../constants";
 import { areConsecutiveDays } from "../utils";
 
 const AuthService = {
   signup: async (res: Response, dto: CreateUserDto) => {
-    let user = await UserService.getUser(dto.email, getUser.EMAIL);
+    let user = await UserService.getUser(getUser.EMAIL, dto.email);
 
     if (user) {
       return res.status(400).json({ message: "User already exists" });
     }
     const referralCode = await UserService.generateUniqueReference();
 
-    if (!referralCode) {
-      return res.status(400).json({
-        message:
-          "Unable to generate unique referral code after multiple attempts, please try again later.",
-      });
-    }
-
     dto.password = await argon.hash(dto.password);
-
-    dto.referralCode = referralCode;
+    dto.referralCode = referralCode!;
+    dto.email = dto.email.toLowerCase();
 
     await UserService.create(dto);
 
-    return res.status(201).json({ user });
+    return res
+      .status(201)
+      .json({ message: "User created verification email sent" });
   },
 
   login: async (res: Response, dto: LoginUserDto) => {
     const now = new Date(Date.now());
-    let user = await UserService.getUser(dto.email, getUser.EMAIL);
+    let user = await UserService.getUser(getUser.EMAIL, dto.email);
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
@@ -66,6 +66,53 @@ const AuthService = {
     user.password = "";
 
     return res.status(200).json({ user, token, message: "Login successful" });
+  },
+
+  forgotpassword: async (res: Response, dto: ForgotPasswordDto) => {
+    let user = await UserService.getUser(getUser.EMAIL, dto.email);
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const token = JWTService.sign({ email: dto.email }).split(".")[2];
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = new Date(Date.now() + 3600000);
+
+    await user.save();
+
+    return res.status(200).json({ message: "Token sent to email" });
+  },
+
+  resetpassword: async (
+    res: Response,
+    userId: string,
+    token: string,
+    dto: ResetPasswordDto
+  ) => {
+    if (dto.password !== dto.confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    let user = await UserService.getUser(getUser.OPTIONS, undefined, {
+      _id: userId,
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: new Date(Date.now()) },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    user.password = await argon.hash(dto.password);
+
+    user.resetPasswordToken = "";
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Password reset successful" });
   },
 };
 

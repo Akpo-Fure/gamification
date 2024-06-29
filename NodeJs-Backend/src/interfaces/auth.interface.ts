@@ -1,8 +1,8 @@
 import { Request } from "express";
-import { IUserResponse } from ".";
+import { IUser } from ".";
 
 interface IRequest extends Request {
-  user: IUserResponse;
+  user: IUser;
 }
 
 export { IRequest };

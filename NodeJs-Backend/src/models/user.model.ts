@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { CreateUserDto } from "../dto";
+import { IUser } from "../interfaces";
 
-const userSchema: Schema = new Schema<CreateUserDto>(
+const userSchema: Schema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -14,9 +14,9 @@ const userSchema: Schema = new Schema<CreateUserDto>(
     loginStreak: { type: Number, required: true, default: 0 },
     isDisabled: { type: Boolean, required: true, default: false },
     verificationToken: { type: String, required: false },
-    verificationTokenExpire: { type: Date, required: false },
+    verificationTokenExpires: { type: Date, required: false },
     resetPasswordToken: { type: String, required: false },
-    resetPasswordExpire: { type: Date, required: false },
+    resetPasswordExpires: { type: Date, required: false },
   },
   { timestamps: true }
 );

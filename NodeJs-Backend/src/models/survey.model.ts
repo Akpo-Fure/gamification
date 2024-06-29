@@ -8,7 +8,6 @@ const questionSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: Object.values(questionTypes),
-      default: questionTypes.TEXT_INPUT,
     },
     options: [String],
     isRequired: { type: Boolean, required: true, default: false },

@@ -1,4 +1,4 @@
 import { CreateUserDto } from "./user.dto";
-import { LoginUserDto } from "./auth.dto";
+import { LoginUserDto, ForgotPasswordDto, ResetPasswordDto } from "./auth.dto";
 
-export { CreateUserDto, LoginUserDto };
+export { CreateUserDto, LoginUserDto, ForgotPasswordDto, ResetPasswordDto };

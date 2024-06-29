@@ -1,25 +1,37 @@
-import express, { Application, Request, Response } from "express";
-import dotenv from "dotenv";
+import express, { Application, NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
-import socketServer from "./socket/socket";
+import { config } from "dotenv";
+import { errorHandler } from "./middlewares";
+import { socketServer } from "./socket";
 import { connectDB } from "./config";
 import { authRoute } from "./routes";
+import { IError } from "./interfaces";
 
 const app: Application = express();
 const server = socketServer(app);
 
-dotenv.config();
+config();
 
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World");
+  res.status(200).json({
+    message: "Welcome to NodeJs Backend",
+  });
 });
 
 app.use("/api/auth", authRoute);
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const error: IError = new Error("API Endpoint Not found");
+  error.status = 404;
+  next(error);
+});
+
+app.use(errorHandler);
 
 server.listen(process.env.PORT, () => {
   connectDB();

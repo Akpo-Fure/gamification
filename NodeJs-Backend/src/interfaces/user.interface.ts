@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-interface IUserResponse extends Document {
+interface IUser extends Document {
   name: string;
   email: string;
   password: string;
@@ -12,11 +12,11 @@ interface IUserResponse extends Document {
   loginStreak: number;
   isDisabled: boolean;
   verificationToken?: string;
-  verificationTokenExpire?: Date;
+  verificationTokenExpires?: Date;
   resetPasswordToken?: string;
-  resetPasswordExpire?: Date;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export { IUserResponse };
+export { IUser };

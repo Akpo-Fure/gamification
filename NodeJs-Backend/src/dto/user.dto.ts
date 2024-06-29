@@ -49,13 +49,13 @@ class CreateUserDto {
   isDisabled?: boolean;
 
   @IsOptional()
-  verificationTokenExpire?: Date;
+  verificationTokenExpires?: Date;
 
   @IsOptional()
   resetPasswordToken?: string;
 
   @IsOptional()
-  resetPasswordExpire?: Date;
+  resetPasswordExpires?: Date;
 }
 
 export { CreateUserDto };

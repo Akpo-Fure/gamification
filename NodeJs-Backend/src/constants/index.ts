@@ -1,6 +1,7 @@
 const getUser = {
   ID: "ID",
   EMAIL: "EMAIL",
+  OPTIONS: "OPTIONS",
 };
 
 const questionTypes = {

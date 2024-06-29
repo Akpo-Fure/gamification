@@ -1,13 +1,14 @@
 import { User } from "../models";
-import { IUserResponse } from "../interfaces";
+import { IUser } from "../interfaces";
 import { CreateUserDto } from "../dto";
 import { getUser } from "../constants";
 
 const UserService = {
   getUser: async (
-    value: string,
-    type: string
-  ): Promise<IUserResponse | null> => {
+    type: string,
+    value?: string,
+    options?: object
+  ): Promise<IUser | null> => {
     switch (type) {
       case getUser.ID:
         return await User.findById(value);
@@ -15,6 +16,8 @@ const UserService = {
         return await User.findOne({
           email: value,
         });
+      case getUser.OPTIONS:
+        return await User.findOne(options);
       default:
         return null;
     }
@@ -43,7 +46,9 @@ const UserService = {
       }
     }
 
-    return null;
+    throw new Error(
+      "Unable to generate unique referral code after multiple attempts, please try again later."
+    );
   },
 };
 
