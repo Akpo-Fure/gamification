@@ -1,5 +1,6 @@
-interface IUserResponse {
-  _id: string;
+import { Document } from "mongoose";
+
+interface IUserResponse extends Document {
   name: string;
   email: string;
   password: string;

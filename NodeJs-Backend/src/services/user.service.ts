@@ -4,7 +4,10 @@ import { CreateUserDto } from "../dto";
 import { getUser } from "../constants";
 
 const UserService = {
-  getUser: async (value: string, type: string): Promise<any> => {
+  getUser: async (
+    value: string,
+    type: string
+  ): Promise<IUserResponse | null> => {
     switch (type) {
       case getUser.ID:
         return await User.findById(value);

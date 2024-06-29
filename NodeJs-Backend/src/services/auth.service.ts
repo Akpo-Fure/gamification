@@ -17,7 +17,7 @@ const AuthService = {
     if (!referralCode) {
       return res.status(400).json({
         message:
-          "Unable to generate unique referral code after multiple attempts",
+          "Unable to generate unique referral code after multiple attempts, please try again later.",
       });
     }
 
@@ -45,7 +45,7 @@ const AuthService = {
     if (!user.isVerified) {
     }
 
-    if (areConsecutiveDays(user?.lastLogin!, now)) {
+    if (areConsecutiveDays(user.lastLogin, now)) {
       user.loginStreak += 1;
     } else {
       user.loginStreak = 1;
@@ -61,9 +61,9 @@ const AuthService = {
 
     const token = JWTService.sign(user.toObject(), { expiresIn: "1d" });
 
-    delete user.password;
-
     user = await user.save();
+
+    user.password = "";
 
     return res.status(200).json({ user, token, message: "Login successful" });
   },
