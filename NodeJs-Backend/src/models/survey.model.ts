@@ -35,6 +35,8 @@ const surveySchema = new mongoose.Schema(
     startDate: { type: Date, required: true },
     participants: [participantSchema],
     questions: { type: [questionSchema], required: true },
+    expectedTime: { type: Number, required: true },
+    reward: { type: Number, required: true },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

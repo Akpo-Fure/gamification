@@ -50,6 +50,10 @@ const UserService = {
       "Unable to generate unique referral code after multiple attempts, please try again later."
     );
   },
+
+  updateUser: async (id: string, data: any) => {
+    return await User.findByIdAndUpdate(id, ...data);
+  },
 };
 
 export default UserService;

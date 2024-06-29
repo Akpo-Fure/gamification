@@ -1,6 +1,9 @@
 import { Response } from "express";
+import UserService from "./user.service";
 import { Survey } from "../models";
 import { CreateSurveyDto } from "../dto/survey.dto";
+import { surveyAchievements } from "../constants";
+import Achievement from "../models/achievement.model";
 
 const SurveyService = {
   createSurvey: async (res: Response, userId: string, dto: CreateSurveyDto) => {
@@ -55,6 +58,27 @@ const SurveyService = {
 
     await survey.save();
 
+    const user = await UserService.updateUser(userId, {
+      $inc: { points: survey.reward, surveysAnswered: 1 },
+    });
+
+    const achievement = surveyAchievements.find(
+      (achievement) => user!.surveysAnswered === achievement.value
+    );
+
+    if (achievement) {
+      await Achievement.create({
+        user: userId,
+        title: achievement.title,
+        description: achievement.description,
+        points: achievement.points,
+      });
+
+      await UserService.updateUser(userId, {
+        $inc: { points: achievement.points },
+      });
+    }
+
     return res.status(200).json({ message: "Survey answered" });
   },
 
@@ -63,9 +87,7 @@ const SurveyService = {
     if (!survey) {
       return res.status(404).json({ message: "Survey not found" });
     }
-
     await Survey.findByIdAndUpdate(id, dto);
-
     return res.status(200).json({ message: "Survey updated" });
   },
 

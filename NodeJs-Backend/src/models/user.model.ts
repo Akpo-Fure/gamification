@@ -12,6 +12,7 @@ const userSchema: Schema = new Schema<IUser>(
     referralCode: { type: String, required: true },
     lastLogin: { type: Date, required: false },
     loginStreak: { type: Number, required: true, default: 0 },
+    surveysAnswered: { type: Number, required: true, default: 0 },
     isDisabled: { type: Boolean, required: true, default: false },
     verificationToken: { type: String, required: false },
     verificationTokenExpires: { type: Date, required: false },

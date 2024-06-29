@@ -4,9 +4,21 @@ import { questionTypes } from "../constants";
 const CreateSurveySchema = z.object({
   title: z.string().min(3).max(255),
   description: z.string().min(3).max(255),
-  startDate: z.date().refine((date) => date < new Date(Date.now()), {
-    message: "Start date cannot be in the past",
-  }),
+  startDate: z
+    .date()
+    .refine((date) => date.setHours(0) < new Date().setHours(0), {
+      message: "Start date cannot be in the past",
+    }),
+  expectedTime: z
+    .number()
+    .int()
+    .positive()
+    .max(60, { message: "cannot be more than 60 minutes" }),
+  reward: z
+    .number()
+    .int()
+    .positive()
+    .max(100, { message: "cannot be more than 100" }),
   questions: z
     .array(
       z.object({
