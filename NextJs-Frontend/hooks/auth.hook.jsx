@@ -6,7 +6,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const URL = "/auth/";
 
 export function useRegister() {
-  return useMutation((data) => API.post(`${URL}signup`, data), {
+  const createUser = async (data) => {
+    const res = await API.post(`${URL}signup`, data);
+    return res;
+  };
+  const mutation = useMutation({
+    mutationFn: createUser,
     onSuccess: (res) => {
       toast.success(
         res.data?.message ||
@@ -17,10 +22,18 @@ export function useRegister() {
       toast.error(error.response.data.message);
     },
   });
+
+  return mutation;
 }
 
 export function useLogin() {
-  return useMutation((data) => API.post(`${URL}login`, data), {
+  const login = async (data) => {
+    const res = await API.post(`${URL}login`, data);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: login,
     onSuccess: (res) => {
       Cookies.set("token", res.data.token);
       Cookies.set("user", JSON.stringify(res.data.user));
@@ -30,11 +43,20 @@ export function useLogin() {
       toast.error(error.response.data.message);
     },
   });
+
+  return mutation;
 }
 
 export function useLogout() {
   const queryClient = useQueryClient();
-  return useMutation(() => API.post(`${URL}logout`), {
+
+  const logout = async () => {
+    const res = await API.post(`${URL}logout`);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: logout,
     onSuccess: () => {
       Cookies.remove("token");
       Cookies.remove("user");
@@ -48,7 +70,13 @@ export function useLogout() {
 }
 
 export function useForgotPassword() {
-  return useMutation((data) => API.post(`${URL}forgotpassword`, data), {
+  const forgotPassword = async (data) => {
+    const res = await API.patch(`${URL}forgotpassword`, data);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: forgotPassword,
     onSuccess: (res) => {
       toast.success(
         res.data?.message || "Check your email to reset your password"
@@ -58,18 +86,25 @@ export function useForgotPassword() {
       toast.error(error.response.data.message);
     },
   });
+
+  return mutation;
 }
 
 export function useResetPassword(userId, token) {
-  return useMutation(
-    (data) => API.post(`${URL}resetpassword/${userId}/${token}`, data),
-    {
-      onSuccess: (res) => {
-        toast.success(res.data?.message || "Password reset successfully");
-      },
-      onError: (error) => {
-        toast.error(error.response.data.message);
-      },
-    }
-  );
+  const resetPassword = async (data) => {
+    const res = await API.patch(`${URL}resetpassword/${userId}/${token}`, data);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: (res) => {
+      toast.success(res.data?.message || "Password reset successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  return mutation;
 }

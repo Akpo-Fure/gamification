@@ -1,6 +1,6 @@
 import express from "express";
 import { AuthController } from "../controllers";
-import { validationMiddleware } from "../middlewares";
+import { validationMiddleware, AuthMiddleware } from "../middlewares";
 import {
   SignupUserSchema,
   LoginUserSchema,
@@ -21,6 +21,8 @@ router.post(
   validationMiddleware(LoginUserSchema),
   AuthController.login
 );
+
+router.post("/logout", AuthMiddleware, AuthController.logout);
 
 router.patch(
   "/forgotpassword",

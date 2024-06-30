@@ -19,6 +19,10 @@ const AuthController = {
     const { userId, token } = req.params;
     return await AuthService.resetpassword(res, userId, token, req.body);
   }),
+
+  logout: catchAsync(async (req: Request, res: Response) => {
+    return await AuthService.logout(res);
+  }),
 };
 
 export default AuthController;

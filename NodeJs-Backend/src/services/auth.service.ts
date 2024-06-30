@@ -112,6 +112,10 @@ const AuthService = {
 
     return res.status(200).json({ message: "Password reset successful" });
   },
+
+  logout: async (res: Response) => {
+    return res.status(200).json({ message: "Logout successful" });
+  },
 };
 
 export default AuthService;
