@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { BlueButton } from "../shared/Button";
 import { useState } from "react";
-import { useRegister } from "@/hooks";
+import { useRegister, useResendVerificationEmail } from "@/hooks";
 import { validate } from "@/utils";
 import { RegisterSchema } from "@/schema";
 import { AuthLayout } from ".";
@@ -13,6 +13,8 @@ import { CenteredModal } from "../shared/Modal";
 const Register = () => {
   const router = useRouter();
   const { mutate, isPending } = useRegister();
+  const { mutate: resendEmail, isPending: isResendingEmail } =
+    useResendVerificationEmail();
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -128,7 +130,14 @@ const Register = () => {
             resend the email, or try loggin in to resend the email.
           </small>
 
-          <BlueButton onClick={() => {}} text="Resend Email" />
+          <BlueButton
+            disabled={isResendingEmail}
+            isLoading={isResendingEmail}
+            onClick={() => {
+              resendEmail({ email: formData.email });
+            }}
+            text="Resend Email"
+          />
         </div>
       </CenteredModal>
     </AuthLayout>

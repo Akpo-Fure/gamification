@@ -26,6 +26,44 @@ export function useRegister() {
   return mutation;
 }
 
+export function useVerifyEmail(email, token) {
+  const verifyEmail = async (data) => {
+    const res = await API.patch(`${URL}verifyemail/${email}/${token}`, data);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: verifyEmail,
+    onSuccess: (res) => {
+      toast.success(res.data.message || "Email verified successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  return mutation;
+}
+
+export function useResendVerificationEmail() {
+  const resendVerificationEmail = async (data) => {
+    const res = await API.patch(`${URL}resendemailverification`, data);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: resendVerificationEmail,
+    onSuccess: (res) => {
+      toast.success(res.data.message || "Verification email sent successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  return mutation;
+}
+
 export function useLogin() {
   const login = async (data) => {
     const res = await API.post(`${URL}login`, data);
@@ -67,6 +105,8 @@ export function useLogout() {
       toast.error(error.response.data.message);
     },
   });
+
+  return mutation;
 }
 
 export function useForgotPassword() {

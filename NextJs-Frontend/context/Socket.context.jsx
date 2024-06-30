@@ -10,7 +10,6 @@ const SocketProvider = ({ children }) => {
   const user = useLoggedInUser();
 
   useEffect(() => {
-    if (!user._id || !URL) return;
     const newSocket = io(URL, {
       withCredentials: true,
       transports: ["websocket"],

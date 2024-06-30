@@ -7,6 +7,15 @@ const AuthController = {
     return await AuthService.signup(res, req.body);
   }),
 
+  resendEmailVerification: catchAsync(async (req: Request, res: Response) => {
+    return await AuthService.resendEmailVerification(res, req.body.email);
+  }),
+
+  verifyEmail: catchAsync(async (req: Request, res: Response) => {
+    const { email, token } = req.params;
+    return await AuthService.verifyEmail(res, email, token);
+  }),
+
   login: catchAsync(async (req: Request, res: Response) => {
     return await AuthService.login(res, req.body);
   }),

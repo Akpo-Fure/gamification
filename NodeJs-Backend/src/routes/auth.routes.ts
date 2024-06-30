@@ -6,6 +6,7 @@ import {
   LoginUserSchema,
   ForgotPasswordSchema,
   ResetPasswordSchema,
+  ResendEmailVerificationSchema,
 } from "../validation";
 
 const router = express.Router();
@@ -15,6 +16,14 @@ router.post(
   validationMiddleware(SignupUserSchema),
   AuthController.signup
 );
+
+router.patch(
+  "/resendemailverification",
+  validationMiddleware(ResendEmailVerificationSchema),
+  AuthController.resendEmailVerification
+);
+
+router.patch("/verifyemail/:email/:token", AuthController.verifyEmail);
 
 router.post(
   "/login",

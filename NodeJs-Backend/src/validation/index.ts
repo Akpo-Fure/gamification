@@ -3,6 +3,7 @@ import {
   LoginUserSchema,
   ForgotPasswordSchema,
   ResetPasswordSchema,
+  ResendEmailVerificationSchema,
 } from "./auth.validator";
 import { CreateSurveySchema } from "./survey.validator";
 
@@ -12,4 +13,5 @@ export {
   ForgotPasswordSchema,
   ResetPasswordSchema,
   CreateSurveySchema,
+  ResendEmailVerificationSchema,
 };

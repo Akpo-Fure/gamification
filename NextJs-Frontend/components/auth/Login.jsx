@@ -2,9 +2,9 @@ import Form from "react-bootstrap/Form";
 import React from "react";
 import Link from "next/link";
 import { BlueButton } from "../shared/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useLogin, useLoggedInUser } from "@/hooks";
+import { useLogin, useLoggedInUser, useVerifyEmail } from "@/hooks";
 import { validate } from "@/utils";
 import { LoginSchema } from "@/schema";
 import { AuthLayout } from ".";
@@ -12,14 +12,24 @@ import { TextInput } from "../shared/Input";
 
 const Login = () => {
   const router = useRouter();
+  const { user, token } = router.query;
   const { mutate, isPending } = useLogin();
+  const { mutate: verifyEmail, isPending: isVerifyingEmail } = useVerifyEmail(
+    user,
+    token
+  );
+
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const data = useLoggedInUser();
+  useEffect(() => {
+    if (user && token) {
+      verifyEmail();
+    }
+  }, [user, token]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -86,8 +96,8 @@ const Login = () => {
 
         <BlueButton
           type="submit"
-          disabled={isPending}
-          isLoading={isPending}
+          disabled={isPending || isVerifyingEmail}
+          isLoading={isPending || isVerifyingEmail}
           text="Login"
         />
       </Form>

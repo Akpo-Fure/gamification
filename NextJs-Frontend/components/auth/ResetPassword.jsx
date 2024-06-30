@@ -27,7 +27,13 @@ const ResetPassword = () => {
         setErrors(errors);
         return;
       }
-      mutate(data);
+      mutate(data, {
+        onSuccess: () => {
+          setTimeout(() => {
+            router.push("/auth/login");
+          }, 1000);
+        },
+      });
     });
   };
 
