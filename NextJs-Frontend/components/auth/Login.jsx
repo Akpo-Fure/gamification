@@ -1,9 +1,10 @@
 import Form from "react-bootstrap/Form";
+import React from "react";
 import Link from "next/link";
 import { BlueButton } from "../shared/Button";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useLogin } from "@/hooks";
+import { useLogin, useLoggedInUser } from "@/hooks";
 import { validate } from "@/utils";
 import { LoginSchema } from "@/schema";
 import { AuthLayout } from ".";
@@ -17,6 +18,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+
+  const data = useLoggedInUser();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -92,4 +95,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default React.memo(Login);

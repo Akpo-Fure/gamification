@@ -1,6 +1,10 @@
 import http from "http";
 import { Application } from "express";
 import { Server } from "socket.io";
+import { config } from "dotenv";
+import { SocketService } from "../services";
+
+config();
 
 const socketServer = (app: Application): http.Server => {
   const URL = process.env.CLIENT_URL;
@@ -8,20 +12,22 @@ const socketServer = (app: Application): http.Server => {
   const io = new Server(server, {
     cors: {
       origin: URL,
-      methods: ["GET", "POST", "PUT", "DELETE"],
     },
   });
 
   io.on("connection", (socket) => {
-    app.set("socket", socket);
-    console.log("A user connected");
+    socket.on("go-online", async (userId) => {
+      await SocketService.goOnline(userId, socket);
+    });
 
-    socket.on("disconnect", () => {
-      console.log("A user disconnected");
+    socket.on("disconnect", async () => {
+      await SocketService.goOffline(socket);
+      SocketService.removeSocket(socket);
+      socket.disconnect();
     });
   });
 
-  app.set("io", io);
+  app.set("IO", io);
   return server;
 };
 

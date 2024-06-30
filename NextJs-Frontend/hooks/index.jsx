@@ -5,6 +5,7 @@ import {
   useForgotPassword,
   useResetPassword,
 } from "./auth.hook";
+import { useGetUser, useLoggedInUser } from "./user.hook";
 
 export {
   useRegister,
@@ -12,4 +13,6 @@ export {
   useLogout,
   useForgotPassword,
   useResetPassword,
+  useGetUser,
+  useLoggedInUser,
 };

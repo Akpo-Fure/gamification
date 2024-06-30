@@ -47,12 +47,13 @@ const AuthMiddleware = catchAsync(
           message: "Your account is disabled, please contact support",
         });
       }
+      user.password = "";
 
       (req as IRequest).user = user;
 
       next();
     } catch (error) {
-      return res.status(401).json({ message: "Unauthorized " });
+      return res.status(401).json({ message: "Unauthorized" });
     }
   }
 );

@@ -6,6 +6,7 @@ interface IUser extends Document {
   password: string;
   profilePhoto?: string;
   isAdmin: boolean;
+  isOnline: boolean;
   isVerified: boolean;
   referralCode: string;
   lastLogin?: Date;

@@ -1,18 +1,29 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import io from "socket.io-client";
+import { useLoggedInUser } from "@/hooks";
 
 const SocketContext = createContext();
 
 const SocketProvider = ({ children }) => {
-  const URL = process.env.NEXT_PUBLIC_API_URL;
+  const URL = process.env.NEXT_PUBLIC_SOCKET_URL;
   const [socket, setSocket] = useState(null);
+  const user = useLoggedInUser();
 
   useEffect(() => {
-    const newSocket = io(URL);
+    if (!user._id || !URL) return;
+    const newSocket = io(URL, {
+      withCredentials: true,
+      transports: ["websocket"],
+    });
+    newSocket.on("connect", () => {
+      if (user?._id) {
+        newSocket.emit("go-online", user._id);
+      }
+    });
     setSocket(newSocket);
 
     return () => newSocket.disconnect();
-  }, [URL]);
+  }, [URL, user?._id]);
 
   if (!socket) {
     // implement a loading spinner

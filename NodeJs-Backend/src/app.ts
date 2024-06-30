@@ -13,7 +13,14 @@ const server = socketServer(app);
 
 config();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+  })
+);
+
 app.use(logger("dev"));
 app.use(express.json());
 

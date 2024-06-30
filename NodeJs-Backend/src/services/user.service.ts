@@ -52,7 +52,13 @@ const UserService = {
   },
 
   updateUser: async (id: string, data: any) => {
-    return await User.findByIdAndUpdate(id, ...data);
+    return await User.findByIdAndUpdate(
+      id,
+      { ...data },
+      {
+        new: true,
+      }
+    );
   },
 };
 
