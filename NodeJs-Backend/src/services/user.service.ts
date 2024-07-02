@@ -2,6 +2,7 @@ import { User } from "../models";
 import { IUser } from "../interfaces";
 import { SignupUserDto } from "../dto";
 import { getUser } from "../constants";
+import { get } from "mongoose";
 
 const UserService = {
   getUser: async (
@@ -59,6 +60,10 @@ const UserService = {
         new: true,
       }
     );
+  },
+
+  getAllUsers: async () => {
+    return await User.find();
   },
 };
 

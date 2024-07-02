@@ -4,6 +4,7 @@ import JWTService from "./jwt.service";
 import SurveyService from "./survey.service";
 import SocketService from "./socket.service";
 import EmailService from "./email.service";
+import AdminService from "./admin.service";
 
 export {
   UserService,
@@ -12,4 +13,5 @@ export {
   SurveyService,
   SocketService,
   EmailService,
+  AdminService,
 };
