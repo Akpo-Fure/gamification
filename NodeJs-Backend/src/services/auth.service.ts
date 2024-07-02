@@ -87,16 +87,6 @@ const AuthService = {
       return res.status(400).json({ message: "User not found" });
     }
 
-    if (user.isDisabled) {
-      return res
-        .status(400)
-        .json({ message: "User is disabled, contact support" });
-    }
-
-    if (!user.isVerified) {
-      await sendEmailVerification(user);
-    }
-
     if (areConsecutiveDays(user.lastLogin, now)) {
       user.loginStreak += 1;
     } else {
@@ -109,6 +99,16 @@ const AuthService = {
 
     if (!validPassword) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    if (user.isDisabled) {
+      return res
+        .status(400)
+        .json({ message: "User is disabled, contact support" });
+    }
+
+    if (!user.isVerified) {
+      await sendEmailVerification(user);
     }
 
     const token = JWTService.sign(user.toObject(), { expiresIn: "1d" });

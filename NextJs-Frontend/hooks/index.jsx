@@ -9,6 +9,8 @@ import {
 } from "./auth.hook";
 import { useGetUser, useLoggedInUser } from "./user.hook";
 import useResponsive from "./useResponsive";
+import { useGetUsers } from "./admin.hook";
+import { useCreateSurvey } from "./survey.hook";
 
 export {
   useRegister,
@@ -21,4 +23,6 @@ export {
   useResendVerificationEmail,
   useVerifyEmail,
   useResponsive,
+  useGetUsers,
+  useCreateSurvey,
 };

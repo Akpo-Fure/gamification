@@ -4,11 +4,7 @@ import { questionTypes } from "../constants";
 const CreateSurveySchema = z.object({
   title: z.string().min(3).max(255),
   description: z.string().min(3).max(255),
-  startDate: z
-    .date()
-    .refine((date) => date.setHours(0) < new Date().setHours(0), {
-      message: "Start date cannot be in the past",
-    }),
+  startDate: z.string().refine((value) => !isNaN(Date.parse(value))),
   expectedTime: z
     .number()
     .int()

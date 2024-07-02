@@ -76,6 +76,12 @@ const Home = () => {
     }
   }, [tab]);
 
+  useEffect(() => {
+    if (!isAdmin) {
+      setActive("surveys");
+    }
+  }, [isAdmin]);
+
   const handleTabChange = (tab) => {
     setActive(tab);
     router.push(`/home?tab=${tab}`);
@@ -115,7 +121,7 @@ const Home = () => {
           <Main isMobile={isMobile} isTablet={isTablet} isLaptop={isLaptop}>
             <div>
               <FlexRow>
-                {tabs.map((tab) => {
+                {tabs.map((tab, key) => {
                   if (tab.isAdminTab && !isAdmin) {
                     return null;
                   }
@@ -131,7 +137,12 @@ const Home = () => {
                   );
                 })}
               </FlexRow>
-              <div>{tabs.find((tab) => tab.tab === active)?.content()}</div>
+              {/* <div>{tabs.find((tab) => tab.tab === active)?.content()}</div>
+               */}
+              <div>{active === "users" && <Users />}</div>
+              <div>{active === "surveys" && <Surveys />}</div>
+              <div>{active === "achievements" && <div>Achievements</div>}</div>
+              <div>{active === "badges" && <div>Badges</div>}</div>
             </div>
           </Main>
         </InnerFlexColumn>

@@ -16,13 +16,16 @@ export function useGetUser() {
   const query = useQuery({
     queryFn: getUser,
     queryKey: ["GetUser"],
+    refetchOnWindowFocus: "always",
+    refetchInterval: 5000,
   });
 
   return query;
 }
 
 export function useLoggedInUser() {
-  const user = Cookies.get("user");
+  const { data } = useGetUser();
+  const user = data ? JSON.stringify(data) : Cookies.get("user");
   return useMemo(() => {
     if (user) {
       try {
@@ -33,5 +36,5 @@ export function useLoggedInUser() {
       }
     }
     return null;
-  }, [user]);
+  }, [user, data]);
 }

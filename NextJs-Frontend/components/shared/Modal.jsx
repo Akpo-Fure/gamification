@@ -11,21 +11,6 @@ const CenteredModal = ({ show, onHide, size, header, footer, children }) => {
   );
 };
 
-const RightModal = ({ show, onHide, size, header, footer, children }) => {
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size={size ?? "lg"}
-      dialogClassName="modal-right"
-    >
-      <Modal.Header closeButton>{header}</Modal.Header>
-      <Modal.Body>{children}</Modal.Body>
-      <Modal.Footer>{footer}</Modal.Footer>
-    </Modal>
-  );
-};
-
 CenteredModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
@@ -35,13 +20,4 @@ CenteredModal.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-RightModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onHide: PropTypes.func.isRequired,
-  size: PropTypes.string,
-  header: PropTypes.element.isRequired,
-  footer: PropTypes.element,
-  children: PropTypes.element.isRequired,
-};
-
-export { CenteredModal, RightModal };
+export { CenteredModal };

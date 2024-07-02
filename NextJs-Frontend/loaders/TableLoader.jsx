@@ -23,36 +23,19 @@ const ResponsiveTableLoader = ({ count = 5 }) => {
                   }}
                 >
                   <td style={{ width: "20%", maxWidth: "45px" }}>
-                    <Skeleton
-                      height={45}
-                      circle={true}
-                      baseColor={colors.gray100}
-                      highlightColor={colors.gray200}
-                    />
+                    <Skeleton height={45} circle={true} />
                   </td>
                   <td style={{ width: isMobile ? "30%" : "15%" }}>
-                    <Skeleton
-                      height={40}
-                      baseColor={colors.gray100}
-                      highlightColor={colors.gray200}
-                    />
+                    <Skeleton height={40} />
                   </td>
                   {/* {!isMobile && ( */}
                   <td style={{ width: isMobile ? "50%" : "30%" }}>
-                    <Skeleton
-                      height={40}
-                      baseColor={colors.gray100}
-                      highlightColor={colors.gray200}
-                    />
+                    <Skeleton height={40} />
                   </td>
                   {/* )} */}
                   {!isMobile && (
                     <td style={{ width: "37%" }}>
-                      <Skeleton
-                        height={40}
-                        baseColor={colors.gray100}
-                        highlightColor={colors.gray200}
-                      />
+                      <Skeleton height={40} />
                     </td>
                   )}
                 </tr>

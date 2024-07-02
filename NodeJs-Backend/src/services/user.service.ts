@@ -63,7 +63,7 @@ const UserService = {
   },
 
   getAllUsers: async () => {
-    return await User.find();
+    return await User.find().select("-password");
   },
 };
 
