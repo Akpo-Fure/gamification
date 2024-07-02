@@ -8,6 +8,7 @@ import {
   useVerifyEmail,
 } from "./auth.hook";
 import { useGetUser, useLoggedInUser } from "./user.hook";
+import useResponsive from "./useResponsive";
 
 export {
   useRegister,
@@ -19,4 +20,5 @@ export {
   useLoggedInUser,
   useResendVerificationEmail,
   useVerifyEmail,
+  useResponsive,
 };

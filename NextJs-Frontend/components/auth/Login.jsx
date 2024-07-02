@@ -39,7 +39,7 @@ const Login = () => {
         return;
       }
       mutate(data, {
-        onSuccess: () => router.push("/"),
+        onSuccess: () => router.push("/home"),
       });
     });
   };
