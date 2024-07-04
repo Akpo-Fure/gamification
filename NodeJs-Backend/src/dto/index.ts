@@ -3,6 +3,13 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
   SignupUserDto,
+  ResendEmailVerificationDto,
 } from "./auth.dto";
 
-export { LoginUserDto, ForgotPasswordDto, ResetPasswordDto, SignupUserDto };
+export {
+  LoginUserDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  SignupUserDto,
+  ResendEmailVerificationDto,
+};

@@ -23,7 +23,6 @@ const EmailService = {
       };
 
       const info = await transporter.sendMail(mailOptions);
-      console.log("Email sent: %s", info.messageId);
       return info;
     } catch (err) {
       console.log("Error sending email");

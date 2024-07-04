@@ -39,9 +39,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(errorHandler);
+if (!module.parent) {
+  server.listen(process.env.PORT, async () => {
+    await connectDB();
+    console.clear();
+    console.log(`Server is running on port: ${process.env.PORT}`);
+  });
+}
 
-server.listen(process.env.PORT, () => {
-  connectDB();
-  console.clear();
-  console.log(`Server is running on port: ${process.env.PORT}`);
-});
+export default server;
