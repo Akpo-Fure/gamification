@@ -8,7 +8,7 @@ const Users = () => {
 
   const bodyRows = useMemo(() => {
     if (data) {
-      return data.map((user) => [
+      return data?.data?.map((user) => [
         <span
           style={{
             fontWeight: "bold",

@@ -32,7 +32,7 @@ const TextInput = ({
             marginBottom: "0em",
           }}
         >
-          {label}
+          {label} {required && <span style={{ color: colors.error }}>*</span>}
         </Form.Label>
         <Form.Control
           rows={rows || 1}
@@ -104,7 +104,14 @@ const SelectInput = ({ value, onChange, options, label, lists, errors }) => {
   );
 };
 
-const CheckboxInput = ({ value, checked, onChange, label, errors }) => {
+const CheckboxInput = ({
+  value,
+  checked,
+  onChange,
+  errors,
+  required,
+  label,
+}) => {
   return (
     <Form.Group
       style={{
@@ -120,20 +127,21 @@ const CheckboxInput = ({ value, checked, onChange, label, errors }) => {
       >
         <Form.Check
           type="checkbox"
-          label={label}
           checked={checked}
+          label={label}
           onChange={onChange}
+          required={required}
         />
-        {errors && (
-          <Form.Text
-            style={{
-              color: colors.error,
-            }}
-          >
-            {errors}
-          </Form.Text>
-        )}
       </div>
+      {errors && (
+        <Form.Text
+          style={{
+            color: colors.error,
+          }}
+        >
+          {errors}
+        </Form.Text>
+      )}
     </Form.Group>
   );
 };
@@ -164,6 +172,7 @@ CheckboxInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   errors: PropTypes.string,
+  required: PropTypes.bool,
 };
 
 export { TextInput, SelectInput, CheckboxInput };

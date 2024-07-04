@@ -13,20 +13,11 @@ const SurveyController = {
     return await SurveyService.getActiveSurveys(res);
   }),
 
-  getMySurveys: catchAsync(async (req: Request, res: Response) => {
-    const { user } = req as IRequest;
-    const userId = user.id;
-    return await SurveyService.getMySurveys(res, userId);
-  }),
-
-  getSurveyById: catchAsync(async (req: Request, res: Response) => {
-    return await SurveyService.getSurveyById(res, req.params.id);
-  }),
-
   answerSurvey: catchAsync(async (req: Request, res: Response) => {
     const { user } = req as IRequest;
     const userId = user.id;
     return await SurveyService.answerSurvey(
+      req,
       res,
       userId,
       req.params.id,

@@ -5,7 +5,7 @@ import {
   AuthMiddleware,
   AdminMiddleware,
 } from "../middlewares";
-import { CreateSurveySchema } from "../validation";
+import { CreateSurveySchema, AnswerSurveySchema } from "../validation";
 
 const router = express.Router();
 
@@ -15,6 +15,15 @@ router.post(
   AuthMiddleware,
   AdminMiddleware,
   SurveyController.createSurvey
+);
+
+router.get("/active", AuthMiddleware, SurveyController.getActiveSurveys);
+
+router.patch(
+  "/answer/:id",
+  validationMiddleware(AnswerSurveySchema),
+  AuthMiddleware,
+  SurveyController.answerSurvey
 );
 
 export default router;

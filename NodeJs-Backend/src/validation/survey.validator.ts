@@ -20,11 +20,7 @@ const CreateSurveySchema = z.object({
       z.object({
         question: z.string().min(3).max(255),
         type: z.enum(Object.values(questionTypes) as [string, ...string[]]),
-        options: z.array(
-          z.object({
-            option: z.string().min(3).max(255),
-          })
-        ),
+        options: z.array(z.string().min(1).max(255)),
         isRequired: z.boolean(),
       })
     )
@@ -45,4 +41,42 @@ const CreateSurveySchema = z.object({
     }),
 });
 
-export { CreateSurveySchema };
+const AnswerSurveySchema = z.object({
+  answers: z
+    .array(
+      z.object({
+        question: z.string().min(3).max(255),
+        type: z.enum(Object.values(questionTypes) as [string, ...string[]]),
+        options: z.array(z.string().min(1).max(255)),
+        isRequired: z.boolean(),
+        answer: z.union([z.string().min(1).max(255), z.array(z.string())]),
+      })
+    )
+    .superRefine((values, ctx) => {
+      values.forEach((answer, index) => {
+        if (
+          answer.type !== questionTypes.TEXT_INPUT &&
+          answer?.answer.length === 0
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Answer is required",
+            path: ["answers", index, "answer"],
+          });
+        }
+        if (
+          answer.type !== questionTypes.MULTIPLE_CHOICE &&
+          answer?.answer === ""
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Answer is required",
+            path: ["answers", index, "answer"],
+          });
+        }
+      });
+      return values;
+    }),
+});
+
+export { CreateSurveySchema, AnswerSurveySchema };

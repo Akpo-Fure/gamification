@@ -1,6 +1,12 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import * as argon from "argon2";
-import { UserService, JWTService, EmailService } from "../services";
+import {
+  UserService,
+  JWTService,
+  EmailService,
+  AchievementService,
+  PointsService,
+} from "../services";
 import {
   SignupUserDto,
   LoginUserDto,
@@ -9,8 +15,7 @@ import {
 } from "../dto";
 
 import { getUser } from "../constants";
-import { areConsecutiveDays } from "../utils";
-import { IUser } from "../interfaces";
+import { referralAchievements } from "../constants";
 
 const AuthService = {
   signup: async (res: Response, dto: SignupUserDto) => {
@@ -33,6 +38,18 @@ const AuthService = {
     });
 
     await sendEmailVerification(newUser);
+
+    if (dto.referralCode) {
+      const referrer = await UserService.getUser(getUser.OPTIONS, undefined, {
+        referralCode: dto.referralCode,
+      });
+
+      if (referrer) {
+        await UserService.updateUser(newUser.id, {
+          referrer: referrer.id,
+        });
+      }
+    }
 
     return res
       .status(201)
@@ -61,9 +78,14 @@ const AuthService = {
     return res.status(200).json({ message: "Verification email sent" });
   },
 
-  verifyEmail: async (res: Response, email: string, token: string) => {
+  verifyEmail: async (
+    req: Request,
+    res: Response,
+    email: string,
+    token: string
+  ) => {
     let user = await UserService.getUser(getUser.OPTIONS, undefined, {
-      email,
+      _id: email,
       verificationToken: token,
       verificationTokenExpires: { $gt: new Date(Date.now()) },
     });
@@ -72,28 +94,54 @@ const AuthService = {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
+    if (user.isVerified === true) {
+      return res.status(400).json({ message: "User is already verified" });
+    }
+
     user.isVerified = true;
 
     await user.save();
+
+    if (user.referrer) {
+      let referrer = await UserService.getUser(getUser.ID, user.referrer);
+
+      if (referrer) {
+        referrer = await UserService.updateUser(referrer.id, {
+          $inc: { personsReferred: 1 },
+        });
+
+        const achievement = referralAchievements.find(
+          (achievement) => referrer?.personsReferred === achievement.value
+        );
+
+        if (achievement) {
+          await AchievementService.createAchievement(
+            req,
+            referrer?.id,
+            achievement.title,
+            achievement.description
+          );
+
+          await PointsService.updateUserPoints(
+            req,
+            referrer?.id,
+            achievement.points
+          );
+
+          await PointsService.emitLeaderboard(req);
+        }
+      }
+    }
 
     return res.status(200).json({ message: "Email verified" });
   },
 
   login: async (res: Response, dto: LoginUserDto) => {
-    const now = new Date(Date.now());
     let user = await UserService.getUser(getUser.EMAIL, dto.email);
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-
-    if (areConsecutiveDays(user.lastLogin, now)) {
-      user.loginStreak += 1;
-    } else {
-      user.loginStreak = 1;
-    }
-
-    user.lastLogin = now;
 
     const validPassword = await argon.verify(user?.password!, dto.password);
 
@@ -194,7 +242,7 @@ const sendEmailVerification = async (user: any) => {
 
   await user.save();
 
-  const link = `${process.env.CLIENT_URL}/auth/login?user=${user.email}&token=${token}`;
+  const link = `${process.env.CLIENT_URL}/auth/login?user=${user.id}&token=${token}`;
 
   const isEmailSent = await EmailService.sendEmail(
     user.email,

@@ -1,8 +1,9 @@
 import Form from "react-bootstrap/Form";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { BlueButton } from "../shared/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRegister, useResendVerificationEmail } from "@/hooks";
 import { validate } from "@/utils";
 import { RegisterSchema } from "@/schema";
@@ -22,8 +23,24 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    referralCode: "",
+    referralCode: Cookies.get("ref") || "",
   });
+
+  const { ref } = router.query;
+
+  useEffect(() => {
+    if (ref) {
+      Cookies.set("ref", ref);
+    }
+  }, [ref]);
+
+  const referralCode = Cookies.get("ref");
+
+  useEffect(() => {
+    if (referralCode) {
+      setFormData((prevData) => ({ ...prevData, referralCode }));
+    }
+  }, [referralCode]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

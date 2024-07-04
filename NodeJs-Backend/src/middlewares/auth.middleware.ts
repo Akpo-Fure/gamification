@@ -31,13 +31,15 @@ const AuthMiddleware = catchAsync(
         user.lastLogin.toISOString().slice(0, 10) !==
           new Date().toISOString().slice(0, 10)
       ) {
-        if (areConsecutiveDays(user.lastLogin, new Date())) {
+        if (
+          areConsecutiveDays(new Date(user.lastLogin), new Date(Date.now()))
+        ) {
           user.loginStreak += 1;
         } else {
           user.loginStreak = 1;
         }
 
-        user.lastLogin = new Date();
+        user.lastLogin = new Date(Date.now());
 
         await user.save();
       }

@@ -1,7 +1,6 @@
 const Layout = ({ children }) => {
   const { isTablet, isMobile, isLaptop } = useResponsive();
 
-  console.log(isMobile, isTablet, isLaptop);
   return (
     <FlexColumn>
       <InnerFlexColumn>

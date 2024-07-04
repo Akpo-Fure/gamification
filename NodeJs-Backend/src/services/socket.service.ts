@@ -52,7 +52,7 @@ const SocketService = {
           { isOnline: false },
           { new: true }
         );
-        socket.join(updatedUser?._id!.toString());
+        socket.leave(updatedUser?._id!.toString());
         console.log(
           `${updatedUser?._id} is ${
             updatedUser?.isOnline ? "Online" : "Offline"

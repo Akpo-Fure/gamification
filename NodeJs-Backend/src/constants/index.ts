@@ -130,4 +130,85 @@ const loginStreakAchievements = [
   },
 ];
 
-export { getUser, questionTypes, surveyAchievements, loginStreakAchievements };
+const referralAchievements = [
+  {
+    title: "First Referral",
+    description: "Refer your first person",
+    value: 1,
+    points: 50,
+  },
+  {
+    title: "5 Referrals",
+    description: "Refer 5 people",
+    value: 5,
+    points: 100,
+  },
+  {
+    title: "10 Referrals",
+    description: "Refer 10 people",
+    value: 10,
+    points: 200,
+  },
+  {
+    title: "20 Referrals",
+    description: "Refer 20 people",
+    value: 20,
+    points: 500,
+  },
+  {
+    title: "50 Referrals",
+    description: "Refer 50 people",
+    value: 50,
+    points: 1000,
+  },
+  {
+    title: "100 Referrals",
+    description: "Refer 100 people",
+    value: 100,
+    points: 2000,
+  },
+  {
+    title: "Referral Master",
+    description: "Refer 200 people",
+    value: 200,
+    points: 5000,
+  },
+  {
+    title: "Referral King",
+    description: "Refer 500 people",
+    value: 500,
+    points: 10000,
+  },
+  {
+    title: "Referral God",
+    description: "Refer 1000 people",
+    value: 1000,
+    points: 20000,
+  },
+  {
+    title: "Referral Legend",
+    description: "Refer 2000 people",
+    value: 2000,
+    points: 50000,
+  },
+  {
+    title: "Referral Emperor",
+    description: "Refer 5000 people",
+    value: 5000,
+    points: 100000,
+  },
+  {
+    title: "Referral Overlord",
+    description: "Refer 10000 people",
+    value: 10000,
+    points: 200000,
+  },
+];
+
+export {
+  getUser,
+  questionTypes,
+  surveyAchievements,
+  loginStreakAchievements,
+  referralAchievements,
+};

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services";
 import { catchAsync } from "../middlewares";
+import { IRequest } from "../interfaces";
 
 const AuthController = {
   signup: catchAsync(async (req: Request, res: Response) => {
@@ -13,7 +14,7 @@ const AuthController = {
 
   verifyEmail: catchAsync(async (req: Request, res: Response) => {
     const { email, token } = req.params;
-    return await AuthService.verifyEmail(res, email, token);
+    return await AuthService.verifyEmail(req, res, email, token);
   }),
 
   login: catchAsync(async (req: Request, res: Response) => {

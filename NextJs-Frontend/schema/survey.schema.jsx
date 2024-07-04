@@ -2,7 +2,6 @@ import * as yup from "yup";
 import { questionTypes } from "@/constants/enums";
 
 const today = new Date();
-today.setHours(0, 0, 0, 0);
 
 const CreateSurveySchema = yup.object().shape({
   title: yup.string().min(3).max(255).required().trim(),
@@ -12,7 +11,7 @@ const CreateSurveySchema = yup.object().shape({
     .test(
       "is-future-date",
       "Start date cannot be in the past",
-      (value) => value && value.setHours(0, 0, 0, 0) > today
+      (value) => value.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)
     )
     .required(),
   expectedTime: yup

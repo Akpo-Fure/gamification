@@ -1,5 +1,6 @@
-import { Response } from "express";
-import UserService from "./user.service";
+import { Response, Request } from "express";
+// import UserService from "./user.service";
+import { PointsService, AchievementService, UserService } from ".";
 import { Survey } from "../models";
 import { CreateSurveyDto } from "../dto/survey.dto";
 import { surveyAchievements } from "../constants";
@@ -16,32 +17,24 @@ const SurveyService = {
     const surveys = await Survey.find({
       startDate: { $lte: now },
       isClosed: false,
-    });
+    }).sort({ createdAt: -1 });
     return res.status(200).json({ surveys });
   },
 
   getAllSurveys: async (res: Response) => {
-    const surveys = await Survey.find();
+    const surveys = await Survey.find().sort({ createdAt: -1 });
     return res.status(200).json({ surveys });
-  },
-
-  getMySurveys: async (res: Response, userId: string) => {
-    const surveys = await Survey.find({ createdBy: userId });
-    return res.status(200).json({ surveys });
-  },
-
-  getSurveyById: async (res: Response, id: string) => {
-    const survey = await Survey.findById(id);
-    return res.status(200).json({ survey });
   },
 
   answerSurvey: async (
+    req: Request,
     res: Response,
     userId: string,
     surveyId: string,
     dto: any
   ) => {
     let survey = await Survey.findById(surveyId);
+
     if (!survey) {
       return res.status(404).json({ message: "Survey not found" });
     }
@@ -54,29 +47,51 @@ const SurveyService = {
       return res.status(400).json({ message: "Survey already answered" });
     }
 
-    survey.participants.push({ participant: userId, answers: dto });
+    const validatedAnswers = dto.answers.map((answer: any) => {
+      if (!answer.question || !answer.type || !answer.answer) {
+        throw new Error("Invalid answer structure");
+      }
+      return {
+        question: answer.question,
+        type: answer.type,
+        options: answer.options || [],
+        isRequired: answer.isRequired || false,
+        answer: answer.answer,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    });
+
+    survey.participants.push({
+      participant: userId,
+      answers: validatedAnswers,
+    });
 
     await survey.save();
 
     const user = await UserService.updateUser(userId, {
-      $inc: { points: survey.reward, surveysAnswered: 1 },
+      $inc: { surveysAnswered: 1 },
     });
 
     const achievement = surveyAchievements.find(
       (achievement) => user!.surveysAnswered === achievement.value
     );
 
-    if (achievement) {
-      await Achievement.create({
-        user: userId,
-        title: achievement.title,
-        description: achievement.description,
-        points: achievement.points,
-      });
+    await PointsService.updateUserPoints(req, userId, survey.reward);
 
-      await UserService.updateUser(userId, {
-        $inc: { points: achievement.points },
-      });
+    await PointsService.emitLeaderboard(req);
+
+    if (achievement) {
+      await AchievementService.createAchievement(
+        req,
+        userId,
+        achievement.title,
+        achievement.description
+      );
+
+      await PointsService.updateUserPoints(req, userId, achievement.points);
+
+      await PointsService.emitLeaderboard(req);
     }
 
     return res.status(200).json({ message: "Survey answered" });

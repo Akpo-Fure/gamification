@@ -52,7 +52,7 @@ const UserService = {
     );
   },
 
-  updateUser: async (id: string, data: any) => {
+  updateUser: async (id: string, data: any): Promise<IUser | null> => {
     return await User.findByIdAndUpdate(
       id,
       { ...data },
@@ -63,7 +63,7 @@ const UserService = {
   },
 
   getAllUsers: async () => {
-    return await User.find().select("-password");
+    return await User.find().select("-password").sort({ createdAt: -1 });
   },
 };
 

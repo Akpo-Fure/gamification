@@ -16,3 +16,17 @@ export function useGetUsers() {
 
   return query;
 }
+
+export function useGetAdminSurveys() {
+  const getSurveys = async () => {
+    const res = await API.get(`${URL}surveys`);
+    return res;
+  };
+
+  const query = useQuery({
+    queryFn: getSurveys,
+    queryKey: ["GetSurveys"],
+  });
+
+  return query;
+}

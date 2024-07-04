@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -22,7 +23,9 @@ API.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       Cookies.remove("token");
-      window.location.href = "/login";
+      Cookies.remove("user");
+      toast.error("Session expired. Please login again.");
+      window.location.href = "/auth/login";
     }
     return Promise.reject(error);
   }

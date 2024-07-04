@@ -5,7 +5,7 @@ import {
   ResetPasswordSchema,
   ResendEmailVerificationSchema,
 } from "./auth.validator";
-import { CreateSurveySchema } from "./survey.validator";
+import { CreateSurveySchema, AnswerSurveySchema } from "./survey.validator";
 
 export {
   SignupUserSchema,
@@ -14,4 +14,5 @@ export {
   ResetPasswordSchema,
   CreateSurveySchema,
   ResendEmailVerificationSchema,
+  AnswerSurveySchema,
 };

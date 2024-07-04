@@ -12,6 +12,9 @@ interface IUser extends Document {
   lastLogin?: Date;
   loginStreak: number;
   surveysAnswered: number;
+  personsReferred: number;
+  referrer?: string;
+  points: number;
   isDisabled: boolean;
   verificationToken?: string;
   verificationTokenExpires?: Date;

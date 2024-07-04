@@ -11,4 +11,11 @@ router.get(
   AdminController.getAllUsers
 );
 
+router.get(
+  "/surveys",
+  AuthMiddleware,
+  AdminMiddleware,
+  AdminController.getAllSurveys
+);
+
 export default router;

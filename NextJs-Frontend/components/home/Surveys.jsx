@@ -1,11 +1,10 @@
 import { Form } from "react-bootstrap";
-
 import { Button } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import colors from "@/constants/colors";
 import { BiPlus, BiX } from "react-icons/bi";
 import StyledTable from "../shared/Table";
-import Drawer from "../shared/Drawer";
+import { useRouter } from "next/router";
 import { InputGroup } from "react-bootstrap";
 import fontSizes from "@/constants/fontsizes";
 import { SelectInput, TextInput, CheckboxInput } from "../shared/Input";
@@ -14,10 +13,40 @@ import { questionTypes } from "@/constants/enums";
 import { AddQuestionSchema, CreateSurveySchema } from "@/schema/survey.schema";
 import { validate, serperateCamelCase } from "@/utils";
 import { AdminAuth } from "../auth";
+import CreateReview from "../shared/Drawer";
 import { ActionButton, TransparentButton, BlueButton } from "../shared/Button";
-import { useCreateSurvey } from "@/hooks";
+import { useCreateSurvey, useGetAdminSurveys, useLoggedInUser } from "@/hooks";
+import {} from "@/hooks";
+
+const Drawer = AdminAuth(CreateReview);
 
 const Surveys = () => {
+  const router = useRouter();
+
+  const { data, isLoading } = useGetAdminSurveys();
+
+  const bodyRows = useMemo(() => {
+    if (data) {
+      return data?.data?.surveys?.map((survey) => [
+        <span
+          style={{
+            fontWeight: "bold",
+          }}
+        >
+          {survey?.title}
+        </span>,
+        survey?.description,
+        survey?.startDate?.split("T")[0],
+        survey?.questions?.length,
+        `${survey?.expectedTime} mins`,
+        survey?.reward,
+        survey?.participants?.length,
+        `${survey?.isClosed ? "Closed" : "Active"}`,
+      ]);
+    }
+    return [];
+  }, [data]);
+
   return (
     <>
       <StyledTable
@@ -26,25 +55,27 @@ const Surveys = () => {
           <Drawer
             ButtonName="Create Survey"
             DrawerTitle="Create a new Survey"
-            DrawerBody={<CreateSurvey />}
+            DrawerBody={<CreateSurvey router={router} />}
           />
         }
         labels={[
           "Title",
           "Description",
+          "Start Date",
           "No Of Questions",
           "Expected Time",
           "Reward Points",
-          "Status",
+          "No Of Responses",
+          "Closed/Active",
           "",
         ]}
-        bodyRows={[]}
+        bodyRows={bodyRows || []}
       />
     </>
   );
 };
 
-const CreateSurvey = () => {
+const CreateSurvey = ({ router }) => {
   const initialForm = {
     title: "",
     description: "",
@@ -53,9 +84,7 @@ const CreateSurvey = () => {
     reward: "",
     questions: [],
   };
-
   const { mutate, isPending } = useCreateSurvey();
-
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState(initialForm);
@@ -73,7 +102,14 @@ const CreateSurvey = () => {
         reward: parseInt(data.reward),
       };
 
-      mutate(newFormData);
+      mutate(newFormData, {
+        onSuccess: () => {
+          router.push({
+            pathname: "/home",
+            query: { tab: "admin", children: "surveys" },
+          });
+        },
+      });
     });
   };
 
