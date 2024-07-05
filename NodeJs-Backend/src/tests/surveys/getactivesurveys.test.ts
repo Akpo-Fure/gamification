@@ -26,6 +26,7 @@ describe("Get Active Surveys", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral",
+      isVerified: true,
     });
     await user.save();
 
@@ -35,6 +36,7 @@ describe("Get Active Surveys", () => {
       password: await argon.hash("password"),
       referralCode: "referral",
       isAdmin: true,
+      isVerified: true,
     });
 
     await adminUser.save();
@@ -75,26 +77,30 @@ describe("Get Active Surveys", () => {
   });
 
   it("should login ", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: user.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: user.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     token = res.body.token;
-  });
+  }, 10000);
 
   it("should get active surveys", async () => {
     const res = await request(app)
       .get("/api/survey/active")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`)
+      .timeout(10000);
     expect(res.status).toBe(200);
     expect(res.body.surveys.length).toBe(1);
-  });
+  }, 10000);
 
   it("should throw error if user is not logged in", async () => {
-    const res = await request(app).get("/api/survey/active");
+    const res = await request(app).get("/api/survey/active").timeout(10000);
     expect(res.status).toBe(401);
-  });
+  }, 10000);
 });

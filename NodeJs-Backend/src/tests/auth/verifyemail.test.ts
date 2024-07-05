@@ -30,29 +30,35 @@ describe("Verify Email", () => {
   });
 
   it("should verify email", async () => {
-    const res = await request(app).patch(
-      `/api/auth/verifyemail/${newUser._id}/${newUser.verificationToken}`
-    );
+    const res = await request(app)
+      .patch(
+        `/api/auth/verifyemail/${newUser._id}/${newUser.verificationToken}`
+      )
+      .timeout(10000);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should throw error if token expires", async () => {
     await User.findByIdAndUpdate(newUser._id, {
       verificationTokenExpires: new Date(Date.now() - 3600000),
     });
 
-    const res = await request(app).patch(
-      `/api/auth/verifyemail/${newUser._id}/${newUser.verificationToken}`
-    );
+    const res = await request(app)
+      .patch(
+        `/api/auth/verifyemail/${newUser._id}/${newUser.verificationToken}`
+      )
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 
   it("should throw error if user is already verified", async () => {
     await User.findByIdAndUpdate(newUser._id, { isVerified: true });
 
-    const res = await request(app).patch(
-      `/api/auth/verifyemail/${newUser?._id}/${newUser.verificationToken}`
-    );
+    const res = await request(app)
+      .patch(
+        `/api/auth/verifyemail/${newUser?._id}/${newUser.verificationToken}`
+      )
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 });

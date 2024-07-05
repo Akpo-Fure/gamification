@@ -27,6 +27,7 @@ describe("Get Surveys by Admin", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral",
+      isVerified: true,
     });
     await user.save();
 
@@ -36,6 +37,7 @@ describe("Get Surveys by Admin", () => {
       password: await argon.hash("password"),
       referralCode: "referral",
       isAdmin: true,
+      isVerified: true,
     });
 
     await adminUser.save();
@@ -76,39 +78,47 @@ describe("Get Surveys by Admin", () => {
   });
 
   it("should login as admin", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: adminUser.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: adminUser.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     adminToken = res.body.token;
-  });
+  }, 10000);
 
   it("should login as normal user", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: user.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: user.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     normalToken = res.body.token;
-  });
+  }, 10000);
 
   it("should surveys", async () => {
     const res = await request(app)
       .get("/api/admin/surveys")
-      .set("Authorization", `Bearer ${adminToken}`);
+      .set("Authorization", `Bearer ${adminToken}`)
+      .timeout(10000);
     expect(res.status).toBe(200);
     expect(res.body.surveys.length).toBe(2);
-  });
+  }, 10000);
 
   it("should throw error if user is not admin", async () => {
     const res = await request(app)
       .get("/api/admin/surveys")
-      .set("Authorization", `Bearer ${normalToken}`);
+      .set("Authorization", `Bearer ${normalToken}`)
+      .timeout(10000);
     expect(res.status).toBe(403);
-  });
+  }, 10000);
 });

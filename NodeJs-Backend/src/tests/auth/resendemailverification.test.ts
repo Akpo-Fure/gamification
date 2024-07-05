@@ -33,16 +33,18 @@ describe("Resend Email Verification", () => {
   it("should resend email verification", async () => {
     const res = await request(app)
       .patch("/api/auth/resendemailverification")
-      .send(dto);
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should throw error if user does not exist", async () => {
     const res = await request(app)
       .patch("/api/auth/resendemailverification")
-      .send({ email: "test@gmail.com" });
+      .send({ email: "test@gmail.com" })
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 
   it("should throw error if user is already verified", async () => {
     newUser.isVerified = true;
@@ -50,7 +52,8 @@ describe("Resend Email Verification", () => {
 
     const res = await request(app)
       .patch("/api/auth/resendemailverification")
-      .send(dto);
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 });

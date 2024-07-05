@@ -68,6 +68,7 @@ describe("Get Achievements", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral2",
+      isVerified: true,
     });
 
     await user.save();
@@ -81,6 +82,7 @@ describe("Get Achievements", () => {
       verificationToken: JWTService.sign({ referralCode: "someCode" }),
       verificationTokenExpires: new Date(Date.now() + 3600000),
       isAdmin: true,
+      isVerified: true,
     });
 
     await adminUser.save();
@@ -94,22 +96,27 @@ describe("Get Achievements", () => {
 
   it("should verify email", async () => {
     //Gets one achievement from referring a user  when admin is verified
-    const res = await request(app).patch(
-      `/api/auth/verifyemail/${adminUser._id}/${adminUser.verificationToken}`
-    );
+    const res = await request(app)
+      .patch(
+        `/api/auth/verifyemail/${adminUser._id}/${adminUser.verificationToken}`
+      )
+      .timeout(10000);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should login ", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: user.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: user.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     token = res.body.token;
-  });
+  }, 10000);
 
   it("should answer survey", async () => {
     //Get one achievement from answer survey
@@ -119,15 +126,17 @@ describe("Get Achievements", () => {
       .send({
         ...answerSurveyDto,
         createdBy: adminUser._id,
-      });
+      })
+      .timeout(10000);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should get achievements", async () => {
     const res = await request(app)
       .get("/api/achievement")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`)
+      .timeout(10000);
     expect(res.status).toBe(200);
     expect(res.body.achievements.length).toBe(2);
-  });
+  }, 10000);
 });

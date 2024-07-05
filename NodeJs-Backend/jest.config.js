@@ -12,4 +12,5 @@ module.exports = {
   //   coverageReporters: ["text", "html"],
   coveragePathIgnorePatterns: ["/node_modules/"],
   testPathIgnorePatterns: ["/node_modules/"],
+  transformIgnorePatterns: ["/node_modules/"],
 };

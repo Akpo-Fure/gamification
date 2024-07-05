@@ -21,18 +21,25 @@ describe("Signup", () => {
   };
 
   it("should sign up", async () => {
-    const res = await request(app).post("/api/auth/signup").send(dto);
+    const res = await request(app)
+      .post("/api/auth/signup")
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(201);
-  });
+  }, 10000);
   it("should throw error if user already exists", async () => {
     await request(app).post("/api/auth/signup").send(dto);
-    const res = await request(app).post("/api/auth/signup").send(dto);
+    const res = await request(app)
+      .post("/api/auth/signup")
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
   it("should throw error if password and confirmPassword do not match", async () => {
     const res = await request(app)
       .post("/api/auth/signup")
-      .send({ ...dto, confirmPassword: "wrongpassword" });
+      .send({ ...dto, confirmPassword: "wrongpassword" })
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 });

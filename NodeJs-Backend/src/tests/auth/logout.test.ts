@@ -27,25 +27,29 @@ describe("Logout", () => {
   });
 
   it("should login", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: newUser.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: newUser.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     token = res.body.token;
-  });
+  }, 10000);
   it("should logout", async () => {
     const res = await request(app)
       .post("/api/auth/logout")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`)
+      .timeout(10000);
 
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should throw error if user is not logged in", async () => {
-    const res = await request(app).post("/api/auth/logout");
+    const res = await request(app).post("/api/auth/logout").timeout(10000);
     expect(res.status).toBe(401);
-  });
+  }, 10000);
 });

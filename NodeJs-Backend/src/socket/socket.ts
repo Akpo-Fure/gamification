@@ -6,10 +6,12 @@ import { SocketService } from "../services";
 
 config();
 
+let io: Server;
+
 const socketServer = (app: Application): http.Server => {
   const URL = process.env.CLIENT_URL;
   const server = http.createServer(app);
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: URL,
     },
@@ -30,5 +32,7 @@ const socketServer = (app: Application): http.Server => {
   app.set("IO", io);
   return server;
 };
+
+export { io };
 
 export default socketServer;

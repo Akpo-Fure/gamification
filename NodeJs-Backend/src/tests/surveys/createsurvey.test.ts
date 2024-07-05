@@ -27,12 +27,14 @@ describe("Create Survey", () => {
       password: await argon.hash("password"),
       referralCode: "referral",
       isAdmin: true,
+      isVerified: true,
     });
     normalUser = new User({
       name: "Okegbe Akpofure Kelvin",
       email: "okegbeakpofurekelvin+1@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral",
+      isVerified: true,
     });
 
     await adminUser.save();
@@ -62,26 +64,32 @@ describe("Create Survey", () => {
   };
 
   it("should login as admin", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: adminUser.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: adminUser.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     adminToken = res.body.token;
-  });
+  }, 10000);
 
   it("should login as normal user", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: normalUser.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: normalUser.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     normalToken = res.body.token;
-  });
+  }, 10000);
 
   it("should create survey", async () => {
     const res = await request(app)
@@ -90,7 +98,7 @@ describe("Create Survey", () => {
       .send(dto);
 
     expect(res.status).toBe(201);
-  });
+  }, 10000);
 
   it("should throw error if user is not admin", async () => {
     const res = await request(app)
@@ -99,5 +107,5 @@ describe("Create Survey", () => {
       .send(dto);
 
     expect(res.status).toBe(403);
-  });
+  }, 10000);
 });

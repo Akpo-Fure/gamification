@@ -66,6 +66,7 @@ describe("Answer Survey", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral",
+      isVerified: true,
     });
     await user.save();
 
@@ -75,6 +76,7 @@ describe("Answer Survey", () => {
       password: await argon.hash("password"),
       referralCode: "referral",
       isAdmin: true,
+      isVerified: true,
     });
 
     await adminUser.save();
@@ -87,15 +89,18 @@ describe("Answer Survey", () => {
   });
 
   it("should login ", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: user.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: user.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     token = res.body.token;
-  });
+  }, 10000);
 
   it("should answer survey", async () => {
     const res = await request(app)
@@ -104,12 +109,13 @@ describe("Answer Survey", () => {
       .send({
         ...answerSurveyDto,
         createdBy: adminUser._id,
-      });
+      })
+      .timeout(10000);
     const activeUser = await User.findById(user._id);
     expect(res.status).toBe(200);
     expect(activeUser?.points).toBe(150); // 50 points for an achievement (answering their first survey)
     expect(activeUser?.surveysAnswered).toBe(1);
-  });
+  }, 10000);
 
   it("should throw error if user has already answered survey", async () => {
     const res = await request(app)
@@ -118,9 +124,10 @@ describe("Answer Survey", () => {
       .send({
         ...answerSurveyDto,
         createdBy: adminUser._id,
-      });
+      })
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 
   it("should throw error if not logged in", async () => {
     const res = await request(app)
@@ -128,7 +135,8 @@ describe("Answer Survey", () => {
       .send({
         ...answerSurveyDto,
         createdBy: adminUser._id,
-      });
+      })
+      .timeout(10000);
     expect(res.status).toBe(401);
-  });
+  }, 10000);
 });

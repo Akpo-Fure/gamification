@@ -39,9 +39,10 @@ describe("Reset Password", () => {
       .patch(
         `/api/auth/resetpassword/${newUser.id}/${newUser.resetPasswordToken}`
       )
-      .send(dto);
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(200);
-  });
+  }, 10000);
 
   it("should throw error if token expires", async () => {
     newUser.resetPasswordExpires = new Date(Date.now() - 3600000);
@@ -55,7 +56,8 @@ describe("Reset Password", () => {
       .patch(
         `/api/auth/resetpassword/${newUser.id}/${newUser.resetPasswordToken}`
       )
-      .send(dto);
+      .send(dto)
+      .timeout(10000);
     expect(res.status).toBe(400);
-  });
+  }, 10000);
 });

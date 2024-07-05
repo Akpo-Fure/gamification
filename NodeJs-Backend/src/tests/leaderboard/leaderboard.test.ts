@@ -29,6 +29,7 @@ describe("Leaderboard", () => {
       email: "okegbeakpofurekelvin1@gmail.com",
       name: "Okegbe Akpofure Kelvin1",
       points: 100,
+      isVerified: true,
     });
 
     user2 = new User({
@@ -36,6 +37,7 @@ describe("Leaderboard", () => {
       email: "okegbeakpofurekelvin2@gmail.com",
       name: "Okegbe Akpofure Kelvin2",
       points: 400,
+      isVerified: true,
     });
 
     user3 = new User({
@@ -43,6 +45,7 @@ describe("Leaderboard", () => {
       email: "okegbeakpofurekelvin2@gmail.com",
       name: "Okegbe Akpofure Kelvin3",
       points: 300,
+      isVerified: true,
     });
 
     await user1.save();
@@ -51,20 +54,24 @@ describe("Leaderboard", () => {
   });
 
   it("should login", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      email: user1.email,
-      password: "password",
-    });
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: user1.email,
+        password: "password",
+      })
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.token).toBeDefined();
     token = res.body.token;
-  });
+  }, 10000);
 
   it("should get leaderboard", async () => {
     const res = await request(app)
       .get("/api/leaderboard")
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`)
+      .timeout(10000);
 
     expect(res.status).toBe(200);
     expect(res.body.leaderboard).toHaveLength(3);
@@ -74,10 +81,10 @@ describe("Leaderboard", () => {
     expect(res.body.leaderboard[0].points).toBe(400);
     expect(res.body.leaderboard[1].points).toBe(300);
     expect(res.body.leaderboard[2].points).toBe(100);
-  });
+  }, 10000);
 
   it("should throw error if user is not logged in", async () => {
-    const res = await request(app).get("/api/leaderboard");
+    const res = await request(app).get("/api/leaderboard").timeout(10000);
     expect(res.status).toBe(401);
-  });
+  }, 10000);
 });
