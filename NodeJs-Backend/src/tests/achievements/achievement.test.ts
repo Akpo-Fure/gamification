@@ -82,7 +82,6 @@ describe("Get Achievements", () => {
       verificationToken: JWTService.sign({ referralCode: "someCode" }),
       verificationTokenExpires: new Date(Date.now() + 3600000),
       isAdmin: true,
-      isVerified: true,
     });
 
     await adminUser.save();
