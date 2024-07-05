@@ -9,6 +9,7 @@ const connectDB = async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
+  await mongoose.connection.dropDatabase();
 };
 
 const disconnectDB = async () => {

@@ -37,7 +37,7 @@ const AuthService = {
       verificationTokenExpires: new Date(Date.now() + 3600000),
     });
 
-    // await sendEmailVerification(newUser);
+    await sendEmailVerification(newUser);
 
     if (dto.referralCode) {
       const referrer = await UserService.getUser(getUser.OPTIONS, undefined, {
@@ -67,13 +67,13 @@ const AuthService = {
       return res.status(400).json({ message: "User is already verified" });
     }
 
-    // const isEmailSent = await sendEmailVerification(user);
+    const isEmailSent = await sendEmailVerification(user);
 
-    // if (!isEmailSent) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Error sending verification email" });
-    // }
+    if (!isEmailSent) {
+      return res
+        .status(400)
+        .json({ message: "Error sending verification email" });
+    }
 
     return res.status(200).json({ message: "Verification email sent" });
   },
@@ -156,7 +156,7 @@ const AuthService = {
     }
 
     if (!user.isVerified) {
-      // await sendEmailVerification(user);
+      await sendEmailVerification(user);
     }
 
     const token = JWTService.sign(user.toObject(), { expiresIn: "1d" });
@@ -184,17 +184,17 @@ const AuthService = {
 
     const link = `${process.env.CLIENT_URL}/auth/resetpassword/${user.id}/${token}`;
 
-    // const isEmailSent = await EmailService.sendEmail(
-    //   user.email,
-    //   "Password Reset",
-    //   `<p>Click <a href="${link}">here</a> to reset your password<br/> email is valid for 1 hour<br/> Ignore this email if you did not initiate this request</p>`
-    // );
+    const isEmailSent = await EmailService.sendEmail(
+      user.email,
+      "Password Reset",
+      `<p>Click <a href="${link}">here</a> to reset your password<br/> email is valid for 1 hour<br/> Ignore this email if you did not initiate this request</p>`
+    );
 
-    // if (!isEmailSent) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Error sending password reset email" });
-    // }
+    if (!isEmailSent) {
+      return res
+        .status(400)
+        .json({ message: "Error sending password reset email" });
+    }
 
     return res
       .status(200)

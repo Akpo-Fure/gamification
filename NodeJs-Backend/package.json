@@ -8,7 +8,7 @@
     "dev": "nodemon src/app.ts",
     "build": "tsc",
     "serve": "node dist/app.js",
-    "test": "jest --watch"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "argon2": "^0.40.3",
@@ -26,7 +26,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",

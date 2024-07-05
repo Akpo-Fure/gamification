@@ -9,7 +9,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await User.deleteMany({});
   await disconnectDB();
 });
 

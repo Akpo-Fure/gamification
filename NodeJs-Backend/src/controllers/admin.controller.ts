@@ -4,10 +4,12 @@ import { AdminService, SurveyService } from "../services";
 
 const AdminController = {
   getAllUsers: catchAsync(async (req: Request, res: Response) => {
-    return await AdminService.getAllUsers(res);
+    const users = await AdminService.getAllUsers();
+    return res.status(200).json(users);
   }),
   getAllSurveys: catchAsync(async (req: Request, res: Response) => {
-    return await SurveyService.getAllSurveys(res);
+    const surveys = await SurveyService.getAllSurveys();
+    return res.status(200).json({ surveys });
   }),
 };
 

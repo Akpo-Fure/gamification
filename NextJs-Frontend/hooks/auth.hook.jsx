@@ -85,30 +85,6 @@ export function useLogin() {
   return mutation;
 }
 
-export function useLogout() {
-  const queryClient = useQueryClient();
-
-  const logout = async () => {
-    const res = await API.post(`${URL}logout`);
-    return res;
-  };
-
-  const mutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      Cookies.remove("token");
-      Cookies.remove("user");
-      queryClient.clear();
-      toast.success("Logged out successfully");
-    },
-    onError: (error) => {
-      toast.error(error.response.data.message);
-    },
-  });
-
-  return mutation;
-}
-
 export function useForgotPassword() {
   const forgotPassword = async (data) => {
     const res = await API.patch(`${URL}forgotpassword`, data);
@@ -140,6 +116,31 @@ export function useResetPassword(userId, token) {
     mutationFn: resetPassword,
     onSuccess: (res) => {
       toast.success(res.data?.message || "Password reset successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  return mutation;
+}
+
+export function useLogout() {
+  const queryClient = useQueryClient();
+
+  const logout = async () => {
+    const res = await API.post(`${URL}logout`);
+    return res;
+  };
+
+  const mutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      toast.success("Logged out successfully");
+      window.location.replace("/auth/login");
+      queryClient.clear();
+      Cookies.remove("token");
+      Cookies.remove("user");
     },
     onError: (error) => {
       toast.error(error.response.data.message);

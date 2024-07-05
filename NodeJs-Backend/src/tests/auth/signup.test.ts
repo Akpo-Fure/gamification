@@ -3,10 +3,6 @@ import app from "../../app";
 import { connectDB, disconnectDB } from "../../utils/test";
 import { User } from "../../models";
 import { SignupUserDto } from "../../dto";
-import { JWTService } from "../../services";
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import { Server } from "socket.io";
 
 beforeAll(async () => {
   await connectDB();
@@ -14,10 +10,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await disconnectDB();
-});
-
-afterEach(async () => {
-  await User.deleteMany({});
 });
 
 describe("Signup", () => {

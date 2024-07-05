@@ -8,6 +8,8 @@ import {
   InterServerEvents,
 } from "./socket.interface";
 
+import { IParticipant, ISurvey, IQuestion } from "./survey.interface";
+
 export {
   IUser,
   IRequest,
@@ -15,4 +17,7 @@ export {
   ServerToClientEvents,
   ClientToServerEvents,
   InterServerEvents,
+  IParticipant,
+  ISurvey,
+  IQuestion,
 };

@@ -9,6 +9,7 @@ const PointsService = {
     const user = await User.findByIdAndUpdate(
       userId,
       { $inc: { points } },
+
       {
         new: true,
       }
@@ -21,7 +22,7 @@ const PointsService = {
   emitLeaderboard: async (req: Request) => {
     const IO = req.app.get("IO") as Socket;
 
-    const users = await User.find({ isDisabled: false })
+    const users = await User.find({ isDisabled: false, isAdmin: false })
       .sort({ points: -1 })
       .select({ name: 1, points: 1, _id: 0 });
 

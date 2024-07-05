@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
+import { Badge } from "react-bootstrap";
 import { useResponsive } from "@/hooks";
 import { useRouter } from "next/router";
-import { useLoggedInUser } from "@/hooks";
+import { useLoggedInUser, useLogout } from "@/hooks";
 import { TransparentButton as Button } from "../shared/Button";
 import {
   Users,
@@ -75,7 +76,7 @@ export const Main = styled.main`
 
 const Home = () => {
   const user = useLoggedInUser();
-  const { points } = useRealTime();
+  let { points } = useRealTime();
   const { isTablet, isMobile, isLaptop } = useResponsive();
   const isAdmin = user?.isAdmin === true;
 
@@ -99,6 +100,8 @@ const Home = () => {
     router.push(`/home?tab=${tab}`);
   };
 
+  const { mutate, isPending } = useLogout();
+
   const tabs = [
     {
       title: "Admin",
@@ -117,12 +120,6 @@ const Home = () => {
       tab: "achievements",
       isAdminTab: false,
       content: Achievements,
-    },
-    {
-      title: "Badges",
-      tab: "badges",
-      isAdminTab: false,
-      content: () => <div>Badges</div>,
     },
     {
       title: "Leaderboard",
@@ -145,6 +142,11 @@ const Home = () => {
       });
   };
 
+  const surveysAnswered = user?.surveysAnswered || 0;
+  points = user?.points || 0;
+  const loginStreak = user?.loginStreak || 0;
+  const personsReferred = user?.personsReferred || 0;
+
   return (
     <>
       <FlexColumn2>
@@ -156,17 +158,149 @@ const Home = () => {
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  alignItems: "flex-start",
                 }}
               >
-                <span>Total Points: {points}</span>
-                <Button
-                  onClick={handleCopyReferralLink}
+                <div
                   style={{
-                    width: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.5em",
                   }}
                 >
-                  Copy Referral Link
-                </Button>
+                  <span>Welcome: {user?.name}</span>
+                  <span>Total Points: {points || 0}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "0.5em",
+                    }}
+                  >
+                    <Badge
+                      bg={
+                        points > 500
+                          ? "success"
+                          : points > 200
+                          ? "primary"
+                          : points > 100
+                          ? "info"
+                          : points > 10
+                          ? "secondary"
+                          : "secondary"
+                      }
+                    >
+                      Points Level:{" "}
+                      {points > 500
+                        ? "Platinum"
+                        : points > 200
+                        ? "Gold"
+                        : points > 100
+                        ? "Silver"
+                        : points > 0
+                        ? "Bronze"
+                        : "Bronze"}{" "}
+                      ({points})
+                    </Badge>
+
+                    <Badge
+                      bg={
+                        surveysAnswered > 100
+                          ? "success"
+                          : surveysAnswered > 50
+                          ? "primary"
+                          : surveysAnswered > 20
+                          ? "info"
+                          : surveysAnswered > 0
+                          ? "secondary"
+                          : "warning"
+                      }
+                    >
+                      Surveys Level:{" "}
+                      {surveysAnswered > 100
+                        ? "Master"
+                        : surveysAnswered > 50
+                        ? "Expert"
+                        : surveysAnswered > 20
+                        ? "Intermediate"
+                        : surveysAnswered > 0
+                        ? "Beginner"
+                        : "Newbie"}{" "}
+                      ({surveysAnswered})
+                    </Badge>
+                    <Badge
+                      bg={
+                        loginStreak > 30
+                          ? "success"
+                          : loginStreak > 15
+                          ? "primary"
+                          : loginStreak > 7
+                          ? "info"
+                          : loginStreak > 0
+                          ? "secondary"
+                          : "info"
+                      }
+                    >
+                      Streak Level:{" "}
+                      {loginStreak > 30
+                        ? "Legend"
+                        : loginStreak > 15
+                        ? "Champion"
+                        : loginStreak > 7
+                        ? "Contender"
+                        : loginStreak > 0
+                        ? "Participant"
+                        : "Newcomer"}{" "}
+                      ({loginStreak} days)
+                    </Badge>
+
+                    <Badge
+                      bg={
+                        personsReferred > 10
+                          ? "success"
+                          : personsReferred > 5
+                          ? "primary"
+                          : personsReferred > 2
+                          ? "info"
+                          : personsReferred > 0
+                          ? "secondary"
+                          : "secondary"
+                      }
+                    >
+                      Referral Level:{" "}
+                      {personsReferred > 10
+                        ? "Master"
+                        : personsReferred > 5
+                        ? "Expert"
+                        : personsReferred > 2
+                        ? "Intermediate"
+                        : personsReferred > 0
+                        ? "Beginner"
+                        : "Newbie"}{" "}
+                      ({personsReferred})
+                    </Badge>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "1em" }}>
+                  <Button
+                    onClick={handleCopyReferralLink}
+                    style={{
+                      width: "auto",
+                    }}
+                  >
+                    Copy Referral Link
+                  </Button>
+
+                  <Button
+                    onClick={mutate}
+                    style={{
+                      width: "auto",
+                    }}
+                  >
+                    {isPending ? "Logging out..." : "Logout"}
+                  </Button>
+                </div>
               </div>
             )}
             <div>
@@ -187,6 +321,15 @@ const Home = () => {
                       >
                         {tab.title}
                       </TransparentButton>
+                      {/* 
+                        <Button
+                          onClick={mutate}
+                          style={{
+                            width: "auto",
+                          }}
+                        >
+                          {isPending ? "Logging out..." : "Logout"}
+                        </Button> */}
                     </FlexColumn>
                   );
                 })}
