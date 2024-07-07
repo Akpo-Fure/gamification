@@ -159,6 +159,11 @@ const AuthService = {
       await sendEmailVerification(user);
     }
 
+    if (!user.lastLogin || !user.loginStreak) {
+      user.lastLogin = new Date(Date.now());
+      user.loginStreak = 1;
+    }
+
     const token = JWTService.sign(user.toObject(), { expiresIn: "1d" });
 
     user = await user.save();
