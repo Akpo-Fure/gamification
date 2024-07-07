@@ -26,6 +26,7 @@ describe("Reset Password", () => {
         "."
       )[2],
       resetPasswordExpires: new Date(Date.now() + 3600000),
+      isVerified: true,
     });
     await newUser.save();
   });

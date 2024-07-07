@@ -22,6 +22,7 @@ describe("Forgot Password", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: "password",
       referralCode: "referral",
+      isVerified: true,
     });
     await newUser.save();
 

@@ -22,6 +22,7 @@ describe("Logout", () => {
       email: "okegbeakpofurekelvin@gmail.com",
       password: await argon.hash("password"),
       referralCode: "referral",
+      isVerified: true,
     });
     await newUser.save();
   });
