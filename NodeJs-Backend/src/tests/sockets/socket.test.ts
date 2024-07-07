@@ -16,7 +16,10 @@ let ioServer: Server;
 beforeAll(async () => {
   await connectDB();
   httpServer = createServer(app);
-  httpServer.listen(Number(process.env.PORT));
+  httpServer.listen(Number(process.env.PORT)).on("error", () => {
+    httpServer.close();
+    httpServer.listen(Number(process.env.PORT));
+  });
   ioServer = io;
   ioServer.attach(httpServer);
   socket = connect(process.env.API_URL!, {
@@ -27,13 +30,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await disconnectDB();
-  ioServer.close();
-  httpServer.close();
-
   if (socket.connected) {
     socket.disconnect();
   }
+  ioServer.close();
+  httpServer.close();
+  await disconnectDB();
 });
 
 describe("Should connect to socket server", () => {
