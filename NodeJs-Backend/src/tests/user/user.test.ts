@@ -16,6 +16,7 @@ afterAll(async () => {
 describe("Get User", () => {
   let dto: LoginUserDto;
   let newUser: any;
+  let token: string;
 
   beforeAll(async () => {
     newUser = new User({
@@ -39,14 +40,34 @@ describe("Get User", () => {
       .send(dto)
       .timeout(10000);
     expect(res.status).toBe(200);
+    expect(res.body.token).toBeDefined();
+    token = res.body.token;
   }, 10000);
 
   it("should get user", async () => {
     const res = await request(app)
       .get("/api/user/me")
-      .set("Authorization", `Bearer ${newUser.token}`)
+      .set("Authorization", `Bearer ${token}`)
       .timeout(10000);
     expect(res.status).toBe(200);
+  }, 10000);
+
+  it("should throw error if user is disabled", async () => {
+    newUser.isDisabled = true;
+    await newUser.save();
+    const res = await request(app)
+      .get("/api/user/me")
+      .set("Authorization", `Bearer ${token}`)
+      .timeout(10000);
+    expect(res.status).toBe(401);
+  }, 10000);
+
+  it("should throw error if token is invalid", async () => {
+    const res = await request(app)
+      .get("/api/user/me")
+      .set("Authorization", `Bearer ${token}invalid`)
+      .timeout(10000);
+    expect(res.status).toBe(401);
   }, 10000);
 
   it("should throw error if not logged in", async () => {
