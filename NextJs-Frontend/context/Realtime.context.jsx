@@ -40,7 +40,7 @@ const RealTimeProvider = ({ children }) => {
 
   useEffect(() => {
     socket.on("received_points", (points) => {
-      // toast.success(`Congratulations: You received ${points} points!`);
+      toast.success(`Congratulations: You received ${points} points!`);
     });
 
     return () => {
@@ -67,6 +67,10 @@ const RealTimeProvider = ({ children }) => {
       setAchievements((prev) => [...prev, achievement]);
       queryClient.invalidateQueries("GetAchievements");
     });
+
+    return () => {
+      socket.off("new_achievement");
+    };
   }, [socket, queryClient]);
 
   useEffect(() => {
@@ -74,6 +78,10 @@ const RealTimeProvider = ({ children }) => {
       setLeaderboard(leaderboard);
       queryClient.invalidateQueries("GetLeaderboard");
     });
+
+    return () => {
+      socket.off("new_leaderboard");
+    };
   }, [socket, queryClient]);
 
   return (
